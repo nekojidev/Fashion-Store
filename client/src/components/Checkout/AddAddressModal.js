@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 //MUI COMPONENTS
 import TextField from '@mui/material/TextField'
@@ -13,11 +15,14 @@ import CloseIcon from '@mui/icons-material/Close'
 //REDUX
 import { addAddress } from '../../redux/actions/userActions'
 import { ADD_ADDRESS_RESET } from '../../redux/constants/userConstants'
+import { setShippingAddress } from '../../redux/actions/cartActions'
 
 
 const AddAddressModal = () => {
 
     const { userInfo } = useSelector((state) => state.loginUser)
+    const dispatch = useDispatch()
+    const history = useHistory()
 
     const [firstName, setFirstName] = useState(userInfo.firstName)
     const [lastName, setLastName] = useState(userInfo.lastName)
@@ -27,10 +32,15 @@ const AddAddressModal = () => {
     const [city, setCity] = useState("")
     const [street, setStreet] = useState("")
     const [landmark, setLandmark] = useState("")
+    const [main, setMain] = useState(false)
 
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    
     const handleSubmit = (e) => {
         e.preventDefault()
-
+        const name = `${firstName} ${lastName}`
+        const email = userInfo.email
         const shippingInfo = { name, email, phone, phone2, state, city, address: street, landmark }
 
         if(phone.length < 11 || phone.length > 11) {
@@ -160,7 +170,6 @@ const AddAddressModal = () => {
                         <Grid container rowSpacing={2} columnSpacing={6} sx={{ mt: 2, '& button': { width: "100%" } }} >
                             <Grid item xs={12}>
                             <LoadingButton
-                                endIcon={<SaveIcon />}
                                 loading={loading}
                                 loadingPosition="end"
                                 variant="contained"

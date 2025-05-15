@@ -112,6 +112,17 @@ const Payment = () => {
         dispatch(getPaymentKey())
     }, [dispatch])
 
+    // Wait for publicKey before rendering PaystackButton
+    if (!key) {
+        return (
+            <Layout>
+                <main className='payment'>
+                    <Loader />
+                </main>
+            </Layout>
+        )
+    }
+
     if (loading) {
         return <Layout> <main className='payment'> <Loader /> </main></Layout>
     }
